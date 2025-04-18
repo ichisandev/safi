@@ -8,12 +8,12 @@ from . import memory, gemini, content_fetcher
 from ..agents import link_reader
 
 
-def get_image_prompt(update):
+async def get_image_prompt(photo, text, context):
+    image_base_64 = await content_fetcher.get_image_base64(photo, context)
     prompt = [
-        {"mime_type": "image/jpeg", "data": content_fetcher.get_image_base64(attachment.url)}
-        for attachment in message.attachments
+        {"mime_type": "image/jpeg", "data": image_base_64},
+        text
     ]
-    prompt.append(update)
     return prompt
 
 
@@ -26,16 +26,18 @@ def get_link_prompt(message):
 
 
 async def main(update, context):
-    # if update.context.photo:
+    if update.message.photo:
+        prompt = await get_image_prompt(update.message.photo[-1], update.message.caption, context)
+    elif update.message.reply_to_message.photo:
+        prompt = await get_image_prompt(update.message.reply_to_message.photo[-1], update.message.text, context)
     #     if "tandain" in str(update.message.caption).lower():
     #         await generate_bounding_box.send_bounding_box(update.message)
     #         return
     #     else:
-    #         prompt = get_image_prompt(update)
     # # elif "https" in str(message.content):
     # #     prompt = get_link_prompt(message)
-    # else:
-    prompt = memory.get_chat_history(str(update.message.chat.id))
+    else:
+        prompt = memory.get_chat_history(str(update.message.chat.id))
 
     result = gemini.model.generate_content(
         prompt

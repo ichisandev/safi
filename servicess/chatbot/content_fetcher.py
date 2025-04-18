@@ -1,8 +1,10 @@
-import httpx
+from io import BytesIO
 import base64
 
-
-def get_image_base64(image_url):
-    image = httpx.get(image_url)
-    image_data = base64.b64encode(image.content).decode("utf-8")
+async def get_image_base64(photo, context):
+    file = await context.bot.get_file(photo.file_id)
+    byte_stream = BytesIO()
+    await file.download_to_memory(out=byte_stream)
+    byte_stream.seek(0)
+    image_data = base64.b64encode(byte_stream.read()).decode("utf-8")
     return image_data
