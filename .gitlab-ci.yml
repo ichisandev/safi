@@ -14,16 +14,16 @@ deploy:
     - |
       ssh -i ~/.ssh/id_ed25519.pem -o StrictHostKeyChecking=no -t root@$VPS_IP << EOF
       echo "Navigating to project directory"
-      cd jarfish || exit 1
+      cd safi || exit 1
       echo "Pulling latest commit"
       git pull origin development || exit 1
       echo "Building docker image"
-      docker build -t jarfish:latest . || exit 1
+      docker build -t safi:latest . || exit 1
       echo "Stopping and removing previous container"
-      docker stop project-jarfish || true
-      docker rm project-jarfish || true
+      docker stop project-safi || true
+      docker rm project-safi || true
       echo "Running the latest image in a new container"
-      docker run -d --name project-jarfish jarfish:latest || exit 1
+      docker run -d --name project-safi safi:latest || exit 1
       echo "Pruning dangling images"
       docker image prune -f || exit 1
       EOF
