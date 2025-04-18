@@ -28,8 +28,11 @@ def get_link_prompt(message):
 async def main(update, context):
     if update.message.photo:
         prompt = await get_image_prompt(update.message.photo[-1], update.message.caption, context)
-    elif update.message.reply_to_message.photo:
-        prompt = await get_image_prompt(update.message.reply_to_message.photo[-1], update.message.text, context)
+    elif update.message.reply_to_message:
+        try:
+            prompt = await get_image_prompt(update.message.reply_to_message.photo[-1], update.message.text, context)
+        except:
+            pass
     #     if "tandain" in str(update.message.caption).lower():
     #         await generate_bounding_box.send_bounding_box(update.message)
     #         return
