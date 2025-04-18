@@ -10,7 +10,7 @@ BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
 # Start command handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello! I'm an echo bot. Send me something!")
+    await update.message.reply_text("Haloo, aku Safi. Kamu bisa panggil aku dengan memanggil 'safi', 'saf', atau, 'fi'. Senang berkenalan denganmu! 😊")
 
 # message handler
 async def response(update: Update, context: ContextTypes.DEFAULT_TYPE):
