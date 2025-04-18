@@ -17,7 +17,7 @@ async def route(update, context):
         # print("replied")
         # user_message += f" (mereply ke [{str(message.reply.author)}: {str(message.reply.content)}])"
     if update.message.photo:
-        user_message += " *mengirim attachment*"
+        user_message += " *mengirim gambar*"
     # if message.reply.attachments:
         # message.attachments.append(message.reply.attachments)
     memory.store_message(chatroom_id=str(update.message.chat.id), message=f"{username}: {user_message}")
@@ -42,8 +42,9 @@ async def route(update, context):
     #             return
 
     engage_chatbot = re.search(regex.get_regex(), user_message.lower())
-    if update.message.text == "jarfish reset":
+    if update.message.text.lower() == f"{config.BOT_NAME} reset":
         del memory.chat_histories[str(update.message.chat.id)]
+        await context.bot.send_message(chat_id=update.message.chat.id, text="history berhasil direset")
         return
     try:
         if str(update.message.title).lower() in config.AUTOCHAT_CHANNEL:
