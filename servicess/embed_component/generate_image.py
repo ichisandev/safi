@@ -11,8 +11,8 @@ from servicess.chatbot import memory
 load_dotenv()
 
 trigger_words = ["gambarkan", "gambarin"]
-generate_image_prompt = """
-Kamu adalah gadis yang sangat bersahabat dan loyal bernama unmei-chan.
+generate_image_prompt = f"""
+Kamu adalah gadis yang sangat bersahabat dan loyal bernama {config.BOT_NAME}.
 Kamu adalah pembuat image prompt.
 Responlah hanya image prompt yang singkat dan jelas dalam bahasa inggris.
 Fokuskan image prompt pada permintaan terakhir.
@@ -25,14 +25,14 @@ agent = Agent(
 
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
-async def main(message):
-    if "gambarkan" in str(message.content).lower():
-        image_prompt = str(message.content).lower().replace("unmei-chan", "").replace("mei", "")
+async def main(update, context):
+    if "gambarkan" in str(update.message.text).lower():
+        image_prompt = str(update.message.text).lower().replace("safi", "").replace("saf", "").replace("fi","")
     else:
-        prompt = memory.get_chat_history(str(message.channel.id))
+        prompt = memory.get_chat_history(str(update.message.chat.id))
         agent_response = await agent.run(prompt)
-        image_prompt = agent_response.data.lower().replace("unmei-chan", "").replace("mei", "")
-        await message.channel.send(image_prompt)
+        image_prompt = agent_response.data.lower().replace("safi", "").replace("saf", "").replace("fi","")
+        await context.bot.send_message(chat_id=update.message.chat.id, text=image_prompt)
     response = client.models.generate_content(
         model="models/gemini-2.0-flash-exp",
         contents=image_prompt,
@@ -41,11 +41,20 @@ async def main(message):
     try:
         for part in response.candidates[0].content.parts:
           if part.text is not None:
-            await message.channel.send(part.text)
+            caption = part.text
+          else:
+            caption = "berikut request gambarmu!😊"
           if part.inline_data is not None:
             with io.BytesIO(part.inline_data.data) as file:
-                await message.channel.send(file=discord.File(file, "generated_image.png"))
+                await context.bot.send_photo(
+                    chat_id=update.message.chat.id,
+                    photo=file,
+                    caption=caption
+                )
+            memory.store_message(chatroom_id=str(update.message.chat_id), message=f"{config.BOT_NAME}: {caption}")
     except:
-        await message.channel.send("Image generation error, your request might be inappropriate")
+        warning_message = "Waduh maaf, nggak bisa generete gambar kamu nih😔"
+        await context.bot.send_message(chat_id=update.message.chat.id, text=warning_message)
+        memory.store_message(chatroom_id=str(update.message.chat_id), message=f"{config.BOT_NAME}: {warning_message}")
     return
 
