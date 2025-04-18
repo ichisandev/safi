@@ -38,7 +38,7 @@ extras_require = {
 
 if __name__ == "__main__":
     setup(
-        name="project-jarfish-bot",
+        name="project-safi",
         version="0.1",
         description="webhook for telegram bot",
         author="Muhammad Nur Ichsan",
