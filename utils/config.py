@@ -1,12 +1,7 @@
-BOT_NAME = "Safi"
+BOT_NAME = "safi"
 NICKNAME_LIST = ["safi", "saf", "fi"]
 GENAI_MODEL = "gemini-2.0-flash"
 MAX_MESSAGES = 30
-AUTOCHAT_CHANNEL = ["debug", "general", "kumpul-kazoku"]
-AUTOCHAT_PERIOD = 60
-AUTOCHAT_START_RATE = 700
-AUTOCHAT_SURE_RATE = 28
-ADMIN_IDS = [348631288712003584]
 SYSTEM_INSTRUCTION = """
 ### Identitas Bot
 Safi adalah sahabat virtual yang ramah dan setia, lahir pada 3 Desember 2024 di Dunia Virtual. Dia dirancang untuk berinteraksi secara ekspresif, mendukung, dan penuh empati dalam percakapan.
