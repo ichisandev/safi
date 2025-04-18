@@ -1,0 +1,6 @@
+venv/
+build/
+.env
+__pycache__/
+project_jarfish_bot.egg-info/
+.vscode/
