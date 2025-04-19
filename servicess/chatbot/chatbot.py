@@ -3,6 +3,7 @@ import textwrap
 import google.generativeai as genai
 
 from servicess.embed_component import generate_bounding_box
+from utils import config
 
 from . import memory, gemini, content_fetcher
 from ..agents import link_reader
@@ -45,8 +46,8 @@ async def main(update, context):
     result = gemini.model.generate_content(
         prompt
     )
-    result_filtered = result.text.replace("jarfish: ", "").replace("jarfish-bot: ", "").replace("JarfishBot: ", "")
+    result_filtered = result.text.replace("safi: ", "").replace("Safi: ", "")
     for response_part in textwrap.wrap(result_filtered, 1999, expand_tabs=False, replace_whitespace=False, drop_whitespace=False,):
-        memory.store_message(chatroom_id=str(update.message.chat.id), message=f"jarfish: {response_part}")
+        memory.store_message(chatroom_id=str(update.message.chat.id), message=f"{config.BOT_NAME}: {response_part}")
         await context.bot.send_message(chat_id=update.message.chat.id, text=response_part)
     return
