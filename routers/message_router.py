@@ -44,6 +44,9 @@ async def route(update, context):
 
     engage_chatbot = re.search(regex.get_regex(), user_message.lower())
     if user_message.lower() == f"{config.BOT_NAME} reset":
+        if str(update.message.from_user.id) == "924280878":
+            await context.bot.send_message(chat_id=update.message.chat.id, text="Maaf yaa, kamu nggak bisa reset aku")
+            return
         del memory.chat_histories[str(update.message.chat.id)]
         await context.bot.send_message(chat_id=update.message.chat.id, text="history berhasil direset")
         return
@@ -58,7 +61,7 @@ async def route(update, context):
         try:
             if "poll" in str(update.message.text).lower():
                 await poll.main(update, context)
-            elif any(word in str(update.message.text).lower() for word in generate_image.trigger_words):
+            elif any(word in user_message for word in generate_image.trigger_words):
                 await generate_image.main(update, context)
             else:
                 await chatbot.main(update, context)
