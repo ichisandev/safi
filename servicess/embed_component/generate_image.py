@@ -6,11 +6,11 @@ from google.genai import types
 from dotenv import load_dotenv
 
 from utils import config
-from servicess.chatbot import memory
+from servicess.chatbot import memory, content_fetcher
 
 load_dotenv()
 
-trigger_words = ["gambarkan", "gambarin"]
+trigger_words = ["gambarkan", "gambarin", "editin"]
 generate_image_prompt = f"""
 Kamu adalah gadis yang sangat bersahabat dan loyal bernama {config.BOT_NAME}.
 Kamu adalah pembuat image prompt.
@@ -25,9 +25,16 @@ agent = Agent(
 
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
+async def get_image_prompt(photo, text, context):
+    image_pillow = await content_fetcher.get_image_pillow(photo, context)
+    image_prompt = [(text,), image_pillow]
+    return image_prompt
+
 async def main(update, context):
     if "gambarkan" in str(update.message.text).lower():
         image_prompt = str(update.message.text).lower().replace("safi", "").replace("saf", "").replace("fi","")
+    elif "editin" in str(update.message.caption).lower():
+        image_prompt = await get_image_prompt(update.message.photo[-1], update.message.caption, context)
     else:
         prompt = memory.get_chat_history(str(update.message.chat.id))
         agent_response = await agent.run(prompt)
