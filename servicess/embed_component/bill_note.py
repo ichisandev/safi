@@ -19,8 +19,8 @@ trigger_words = ["catatan utang", "catat utang", "catatan hutang", "catat hutang
 class Entry(pydantic.BaseModel):
     nama_pengutang: str
     barang: str
-    harga: str
-    keterangan: str
+    harga: int
+    # keterangan: str
 
 class EntryRequest(pydantic.BaseModel):
     nama_pembayar: str
@@ -40,8 +40,9 @@ def parse_response(response):
         data.append([
             formatted_date,
             entry.barang,
-            entry.harga,
-            entry.keterangan,
+            str(entry.harga),
+            "",
+            # entry.keterangan,
             response.data.nama_pembayar,
             entry.nama_pengutang,
             "Belum diterima",
