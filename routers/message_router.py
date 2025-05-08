@@ -3,7 +3,7 @@ import traceback
 
 from utils import logger, config
 from servicess.chatbot import memory, chatbot, regex, autochat
-from servicess.embed_component import poll, generate_image
+from servicess.embed_component import poll, generate_image, bill_note
 
 
 async def route(update, context):
@@ -63,6 +63,8 @@ async def route(update, context):
                 await poll.main(update, context)
             elif any(word in user_message for word in generate_image.trigger_words):
                 await generate_image.main(update, context)
+            elif any(word in user_message for word in bill_note.trigger_words):
+                await bill_note.main(update, context)
             else:
                 await chatbot.main(update, context)
         except Exception as e:

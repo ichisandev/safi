@@ -7,6 +7,7 @@ install_requires = [
     "python-telegram-bot",
     "pandas>=2, <3",
     "dotenv",
+    "pytz",
     # "SQLAlchemy>=2.0.23, <3",
     ## gen ai
     "openai>=1, <2",  # might need later, openai client
@@ -16,6 +17,13 @@ install_requires = [
     "pydantic-ai==0.0.16",
     "pydantic_core==2.27.2",
     "tiktoken>=0, <1",  # might need later, token counter
+    ## google-api
+    "google-auth",
+    "google-auth-oauthlib",
+    "google-auth-httplib2",
+    "google-api-python-client",
+    "gspread",
+    "oauth2client",
     ## file reader
     "python-multipart>=0, <1",  # file upload
     "instructor>=1, <2",  # also output guardrails
