@@ -1,6 +1,8 @@
 venv/
 build/
 .env
+database.json
+gapi-credentials.json
 __pycache__/
-project_jarfish_bot.egg-info/
+project_safi.egg-info/
 .vscode/
