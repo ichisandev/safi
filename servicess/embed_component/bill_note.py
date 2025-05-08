@@ -75,15 +75,14 @@ def get_room_id(room_id):
 async def create_new_sheet(update, credentials):
     NOTE_TEMPLATE_SHEET_ID = os.environ.get("NOTE_TEMPLATE_SHEET_ID")
     drive_service = build('drive', 'v3', credentials=credentials)
-    try:
-        room_name = str(update.message.chat.title)
-    except:
+    room_name = str(update.message.chat.title)
+    if room_name == "None":
         room_name = str(update.message.chat.first_name)
     file_metadata = {
         'name': f'Catatan Utang {room_name}',
         'parents': ['root']
     }
-    response = await drive_service.files().copy(
+    response = drive_service.files().copy(
         fileId=NOTE_TEMPLATE_SHEET_ID,
         body=file_metadata
     ).execute()
@@ -92,7 +91,7 @@ async def create_new_sheet(update, credentials):
         'type': 'anyone',
         'role': 'writer'
     }
-    await drive_service.permissions().create(
+    drive_service.permissions().create(
         fileId=new_sheet_id,
         body=permission
     ).execute()
