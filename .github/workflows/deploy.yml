@@ -8,6 +8,10 @@ on:
     types:
       - closed
 
+env:
+  VPS_KEY: ${{ secrets.VPS_KEY }}
+  VPS_IP: ${{ secrets.VPS_IP }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
