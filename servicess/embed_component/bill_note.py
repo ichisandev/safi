@@ -35,16 +35,25 @@ agent = Agent(
 def parse_response(response):
     now = datetime.now(pytz.timezone('Asia/Jakarta'))
     formatted_date = now.strftime("%d-%m-%Y")
+    merged = {}
+    for item in response.data.entry:
+        item_id = item.nama_pengutang.title()
+        if item_id in merged:
+            merged[item_id]["barang"] += " + " + item.barang
+            merged[item_id]["harga"] += item.harga
+        else:
+            merged[item_id] = {"nama_pengutang": item_id, "harga": item.harga, "barang": item.barang}
+    corrected_list = list(merged.values())
     data = []
-    for entry in response.data.entry:
+    for entry in corrected_list:
         data.append([
             formatted_date,
-            entry.barang,
-            str(entry.harga),
+            entry["barang"],
+            str(entry["harga"]),
             "",
             # entry.keterangan,
-            response.data.nama_pembayar,
-            entry.nama_pengutang,
+            response.data.nama_pembayar.title(),
+            entry["nama_pengutang"],
             "Belum diterima",
             "Belum dibayar"
         ])
