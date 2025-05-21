@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir . 
 
 # Copy the required files
-COPY main.py .env gapi-credentials.json ./
+COPY main.py .env gapi-credentials.json database.json ./
 COPY servicess ./servicess
 COPY routers ./routers
 COPY utils ./utils
