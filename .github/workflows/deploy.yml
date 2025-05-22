@@ -1,0 +1,52 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+    types:
+      - closed
+
+env:
+  VPS_KEY: ${{ secrets.VPS_KEY }}
+  VPS_IP: ${{ secrets.VPS_IP }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-client
+          mkdir -p ~/.ssh
+          echo "$VPS_KEY" > ~/.ssh/id_ed25519.pem
+          chmod 600 ~/.ssh/id_ed25519.pem
+
+      - name: Deploy to VPS
+        run: |
+          echo "Deploying to VPS"
+          ssh -i ~/.ssh/id_ed25519.pem -o StrictHostKeyChecking=no -t root@$VPS_IP << EOF
+          echo "Navigating to project directory"
+          cd safi || exit 1
+          echo "Pulling latest commit"
+          git pull origin development || exit 1
+          echo "Building docker image"
+          docker build -t safi:latest . || exit 1
+          echo "Stopping and removing previous container"
+          docker stop project-safi || true
+          docker rm project-safi || true
+          echo "Running the latest image in a new container"
+          docker run -d --name project-safi safi:latest || exit 1
+          echo "Pruning dangling images"
+          docker image prune -f || exit 1
+          EOF
+        env:
+          VPS_KEY: ${{ secrets.VPS_KEY }}
+          VPS_IP: ${{ secrets.VPS_IP }}
+

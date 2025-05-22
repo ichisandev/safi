@@ -1,0 +1,8 @@
+venv/
+build/
+.env
+database.json
+gapi-credentials.json
+__pycache__/
+project_safi.egg-info/
+.vscode/
